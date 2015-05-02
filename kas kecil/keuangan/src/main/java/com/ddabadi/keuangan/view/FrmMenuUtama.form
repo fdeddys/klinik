@@ -48,10 +48,13 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuDaftarTransaksiActionPerformed"/>
               </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem3">
+            <MenuItem class="javax.swing.JMenuItem" name="mnuKwitansi">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Kwitansi"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuKwitansiActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>

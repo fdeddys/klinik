@@ -15,6 +15,7 @@ import com.ddabadi.keuangan.enumerate.TipeTransaksi;
 import com.ddabadi.keuangan.model.JenisTransaksi;
 import com.ddabadi.keuangan.model.Params;
 import com.ddabadi.keuangan.model.TransaksiHd;
+import com.ddabadi.keuangan.utility.Rupiah;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -110,6 +111,7 @@ public class TransaksiKeuangan extends javax.swing.JFrame {
         txtJumlah = new javax.swing.JTextField();
         cmbJenisTransaksi = new javax.swing.JComboBox();
         jLabel1 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -177,6 +179,13 @@ public class TransaksiKeuangan extends javax.swing.JFrame {
 
         jLabel1.setText("keterangan");
 
+        jButton1.setText("jButton1");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -191,6 +200,8 @@ public class TransaksiKeuangan extends javax.swing.JFrame {
                         .addComponent(btnSimpan, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btnPreview, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton1)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -249,7 +260,8 @@ public class TransaksiKeuangan extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSimpan)
-                    .addComponent(btnPreview))
+                    .addComponent(btnPreview)
+                    .addComponent(jButton1))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -300,12 +312,13 @@ public class TransaksiKeuangan extends javax.swing.JFrame {
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
                                     
             TransaksiHd transaksiHd = transaksiHdDao.getById(Long.parseLong(txtId.getText()));            
+            String rp=Rupiah.convert( transaksiHd.getTotal().intValue());
             SlipDto slipDto = new SlipDto();
             slipDto.setId(transaksiHd.getId());
             slipDto.setJenisTransaksi(transaksiHd.getJenisTransaksi().getNamaJenisTransaksi());
             slipDto.setNoTransaksi(transaksiHd.getNoTransaksi());
             slipDto.setTipeTransaksi(transaksiHd.getTipeTransaksi().toString());
-            slipDto.setTerbilang("serebu");
+            slipDto.setTerbilang("# " + rp + "Rupiah #");
             slipDto.setTotal(transaksiHd.getTotal());
             slipDto.setTanggal(sdf.format(transaksiHd.getTanggal() ));
             slipDto.setKeterangan(transaksiHd.getKeterangan());
@@ -325,6 +338,12 @@ public class TransaksiKeuangan extends javax.swing.JFrame {
             System.out.println(e.getMessage());
         }
     }//GEN-LAST:event_btnPreviewActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        String rp=Rupiah.convert(Integer.parseInt(txtJumlah.getText()));
+        System.out.println(rp);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     class ComboItem
     {
@@ -393,6 +412,7 @@ public class TransaksiKeuangan extends javax.swing.JFrame {
     private javax.swing.JButton btnPreview;
     private javax.swing.JButton btnSimpan;
     private javax.swing.JComboBox cmbJenisTransaksi;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

@@ -14,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -60,7 +61,19 @@ public class TransaksiHd implements Serializable {
     @OneToOne
     @JoinColumn(name="jenis_transaksi")
     private JenisTransaksi jenisTransaksi;
+    
+    @ManyToOne
+    @JoinColumn(name="kwitansi")
+    private Kwitansi kwitansi;
 
+    public Kwitansi getKwitansi() {
+        return kwitansi;
+    }
+
+    public void setKwitansi(Kwitansi kwitansi) {
+        this.kwitansi = kwitansi;
+    }
+        
     public JenisTransaksi getJenisTransaksi() {
         return jenisTransaksi;
     }

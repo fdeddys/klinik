@@ -12,6 +12,7 @@ import com.ddabadi.keuangan.dao.TransaksiHdDao;
 import com.ddabadi.keuangan.dto.SlipDto;
 import com.ddabadi.keuangan.model.Params;
 import com.ddabadi.keuangan.model.TransaksiHd;
+import com.ddabadi.keuangan.utility.Rupiah;
 import java.awt.Component;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -139,15 +140,17 @@ public class DaftarTransaksi extends javax.swing.JFrame {
         try{
             Params params = paramsDao.getParams();
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
-                        
+                                    
             Long idTransaksi = Long.parseLong(tableModel.getValueAt(pilih, 0).toString());
             TransaksiHd transaksiHd = transaksiHdDao.getById(idTransaksi);            
+            
+            String rp=Rupiah.convert( transaksiHd.getTotal().intValue());
             SlipDto slipDto = new SlipDto();
             slipDto.setId(idTransaksi);
             slipDto.setJenisTransaksi(transaksiHd.getJenisTransaksi().getNamaJenisTransaksi());
             slipDto.setNoTransaksi(transaksiHd.getNoTransaksi());
             slipDto.setTipeTransaksi(transaksiHd.getTipeTransaksi().toString());
-            slipDto.setTerbilang("serebu");
+            slipDto.setTerbilang("# " + rp + "Rupiah #");
             slipDto.setTotal(transaksiHd.getTotal());
             slipDto.setTanggal(sdf.format(transaksiHd.getTanggal() ));
             slipDto.setKeterangan(transaksiHd.getKeterangan());

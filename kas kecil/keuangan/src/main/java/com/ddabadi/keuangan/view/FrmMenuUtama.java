@@ -14,6 +14,7 @@ import com.ddabadi.keuangan.model.History;
 import com.ddabadi.keuangan.view.master.MasterJenisTransaksi;
 import com.ddabadi.keuangan.view.transaksi.DaftarTransaksi;
 import com.ddabadi.keuangan.view.transaksi.TransaksiKeuangan;
+import com.ddabadi.keuangan.view.transaksi.TransaksiKwitansi;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -54,7 +55,7 @@ public class FrmMenuUtama extends javax.swing.JFrame {
         jMenuItem1 = new javax.swing.JMenuItem();
         mnuPengeluaran = new javax.swing.JMenuItem();
         mnuDaftarTransaksi = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
+        mnuKwitansi = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         mnuSaldoKas = new javax.swing.JMenuItem();
 
@@ -98,8 +99,13 @@ public class FrmMenuUtama extends javax.swing.JFrame {
         });
         jMenu2.add(mnuDaftarTransaksi);
 
-        jMenuItem3.setText("Kwitansi");
-        jMenu2.add(jMenuItem3);
+        mnuKwitansi.setText("Kwitansi");
+        mnuKwitansi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuKwitansiActionPerformed(evt);
+            }
+        });
+        jMenu2.add(mnuKwitansi);
 
         jMenuBar1.add(jMenu2);
 
@@ -170,6 +176,12 @@ public class FrmMenuUtama extends javax.swing.JFrame {
         daftarTransaksi.setVisible(true);
     }//GEN-LAST:event_mnuDaftarTransaksiActionPerformed
 
+    private void mnuKwitansiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuKwitansiActionPerformed
+        // TODO add your handling code here:
+        TransaksiKwitansi transaksi = new TransaksiKwitansi();
+        transaksi.setVisible(true);
+    }//GEN-LAST:event_mnuKwitansiActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -211,9 +223,9 @@ public class FrmMenuUtama extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem mnuDaftarTransaksi;
     private javax.swing.JMenuItem mnuJenisTransaksi;
+    private javax.swing.JMenuItem mnuKwitansi;
     private javax.swing.JMenuItem mnuPengeluaran;
     private javax.swing.JMenuItem mnuSaldoKas;
     // End of variables declaration//GEN-END:variables

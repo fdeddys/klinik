@@ -56,15 +56,15 @@
 		</band>
 	</title>
 	<detail>
-		<band height="225" splitType="Stretch">
+		<band height="268" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="0348dcab-83e3-4eb4-98eb-0a2711d9a570" x="375" y="18" width="100" height="20"/>
+				<reportElement uuid="0348dcab-83e3-4eb4-98eb-0a2711d9a570" x="375" y="17" width="81" height="20"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<text><![CDATA[id]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="88bd079d-5b1f-41eb-b529-b75ab921da84" x="494" y="17" width="43" height="20"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<reportElement uuid="88bd079d-5b1f-41eb-b529-b75ab921da84" x="475" y="17" width="62" height="20"/>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
 			</textField>
 			<staticText>
@@ -108,12 +108,12 @@
 				<textFieldExpression><![CDATA[$F{keterangan}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="219d2374-114d-47f2-afe6-cf681a5d87d8" x="12" y="205" width="198" height="20"/>
+				<reportElement uuid="219d2374-114d-47f2-afe6-cf681a5d87d8" x="8" y="248" width="198" height="20"/>
 				<textElement textAlignment="Center"/>
 				<text><![CDATA[(                                                  )]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="219d2374-114d-47f2-afe6-cf681a5d87d8" x="335" y="205" width="198" height="20"/>
+				<reportElement uuid="219d2374-114d-47f2-afe6-cf681a5d87d8" x="339" y="248" width="198" height="20"/>
 				<textElement textAlignment="Center"/>
 				<text><![CDATA[(                                                  )]]></text>
 			</staticText>
@@ -158,7 +158,7 @@
 				<text><![CDATA[:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="219d2374-114d-47f2-afe6-cf681a5d87d8" x="475" y="17" width="19" height="20"/>
+				<reportElement uuid="219d2374-114d-47f2-afe6-cf681a5d87d8" x="456" y="17" width="19" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<text><![CDATA[:]]></text>
 			</staticText>

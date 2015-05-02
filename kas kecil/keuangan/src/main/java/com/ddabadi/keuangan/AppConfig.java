@@ -8,11 +8,13 @@ package com.ddabadi.keuangan;
 import com.ddabadi.keuangan.dao.HistoryDao;
 import com.ddabadi.keuangan.dao.JenisTransaksiDao;
 import com.ddabadi.keuangan.dao.ParamsDao;
+import com.ddabadi.keuangan.dao.TempTransaksiDao;
 import com.ddabadi.keuangan.dao.TransaksiHdDao;
 import com.ddabadi.keuangan.dao.UrutNoTransaksiDao;
 import com.ddabadi.keuangan.dao.impl.HistoryDaoImpl;
 import com.ddabadi.keuangan.dao.impl.JenisTransaksiDaoImpl;
 import com.ddabadi.keuangan.dao.impl.ParamsDaoImpl;
+import com.ddabadi.keuangan.dao.impl.TempTransaksiDaoImpl;
 import com.ddabadi.keuangan.dao.impl.TransaksiHdDaoImpl;
 import com.ddabadi.keuangan.dao.impl.UrutNoTransaksiDaoImpl;
 import java.util.Properties;
@@ -105,14 +107,16 @@ public class AppConfig {
     public HistoryDao historyFunc(){
         return new HistoryDaoImpl();
     };
-    
-    
-    
+            
     @Bean(name="urutNoTransaksiDao")
     public UrutNoTransaksiDao urutNoTransaksiFunc(){
         return new UrutNoTransaksiDaoImpl();
     };
     
+    @Bean(name="tempTransaksiDao")
+    public TempTransaksiDao tempTransaksiDaoFunc(){
+        return new TempTransaksiDaoImpl();
+    }
     
     
 }

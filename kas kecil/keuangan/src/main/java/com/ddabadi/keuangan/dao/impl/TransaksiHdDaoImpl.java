@@ -14,7 +14,6 @@ import com.ddabadi.keuangan.enumerate.TipeTransaksi;
 import com.ddabadi.keuangan.model.History;
 import com.ddabadi.keuangan.model.JenisTransaksi;
 import com.ddabadi.keuangan.model.TransaksiHd;
-import com.ddabadi.keuangan.repository.HistoryRepository;
 import com.ddabadi.keuangan.repository.TransaksiHdRepository;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -62,8 +61,11 @@ public class TransaksiHdDaoImpl implements TransaksiHdDao {
         
         SimpleDateFormat sdf = new SimpleDateFormat("yy");
         String tahun= sdf.format(transaksiHd.getTanggal()) ;
-        String noTransaksi = urutNoTransaksiDao.generateNoTransaksi(transaksiHd.getTipeTransaksi(),  tahun);
-        transaksiHd.setNoTransaksi(noTransaksi);
+        if(transaksiHd.getNoTransaksi()==(null)){
+            String noTransaksi = urutNoTransaksiDao.generateNoTransaksi(transaksiHd.getTipeTransaksi(),  tahun);
+            transaksiHd.setNoTransaksi(noTransaksi);
+        }
+        
         // Cek HISTORY ada transaksi ga tanggal tsb
         List<History> lists = historyDao.getByDate(transaksiHd.getTanggal());
         if(lists.size()>0){
@@ -88,28 +90,74 @@ public class TransaksiHdDaoImpl implements TransaksiHdDao {
             // End setoran awal            
         }
         JenisTransaksi jenisTransaksi = jenisTransaksiDao.findById(transaksiHd.getJenisTransaksi().getId());
-        History history=new History();
-        history.setKeterangan(jenisTransaksi.getNamaJenisTransaksi().trim() + " " + transaksiHd.getKeterangan());
-        history.setNoTransaksi(transaksiHd.getNoTransaksi());
-        history.setTanggal(transaksiHd.getTanggal());        
-        if(transaksiHd.getTipeTransaksi().equals(TipeTransaksi.penerimaan)){
-            history.setDebet(transaksiHd.getTotal());
-            history.setKredit(0D);
-            history.setSaldo(saldoTerakhir+transaksiHd.getTotal());
-        }else{
-            history.setDebet(0D);
-            history.setKredit(transaksiHd.getTotal());
-            history.setSaldo(saldoTerakhir-transaksiHd.getTotal());
+        
+        if(transaksiHd.getTipeTransaksi().equals(TipeTransaksi.kwitansi)){
+            
+        }else{            
+        
+            History history=new History();
+            history.setKeterangan(jenisTransaksi.getNamaJenisTransaksi().trim() + " " + transaksiHd.getKeterangan());
+            history.setNoTransaksi(transaksiHd.getNoTransaksi());
+            history.setTanggal(transaksiHd.getTanggal());     
+            switch(transaksiHd.getTipeTransaksi()){
+                case farmasi :
+                    history.setDebet(transaksiHd.getTotal());
+                    history.setKredit(0D);
+                    history.setSaldo(saldoTerakhir+transaksiHd.getTotal());
+                    break;
+
+                case klinik :
+                    history.setDebet(transaksiHd.getTotal());
+                    history.setKredit(0D);
+                    history.setSaldo(saldoTerakhir+transaksiHd.getTotal());
+                    break;
+
+                case kwitansi:
+                    break;
+
+                case laboratorium:
+                    history.setDebet(transaksiHd.getTotal());
+                    history.setKredit(0D);
+                    history.setSaldo(saldoTerakhir+transaksiHd.getTotal());
+                    break;
+
+                case penerimaan :
+                    history.setDebet(transaksiHd.getTotal());
+                    history.setKredit(0D);
+                    history.setSaldo(saldoTerakhir+transaksiHd.getTotal());
+                    break;
+
+                case pengeluaran :
+                    history.setDebet(0D);
+                    history.setKredit(transaksiHd.getTotal());
+                    history.setSaldo(saldoTerakhir-transaksiHd.getTotal());
+                    break;                
+            }
+                    
+    //        if(transaksiHd.getTipeTransaksi().equals(TipeTransaksi.penerimaan)){
+    //            history.setDebet(transaksiHd.getTotal());
+    //            history.setKredit(0D);
+    //            history.setSaldo(saldoTerakhir+transaksiHd.getTotal());
+    //        }else{
+    //            history.setDebet(0D);
+    //            history.setKredit(transaksiHd.getTotal());
+    //            history.setSaldo(saldoTerakhir-transaksiHd.getTotal());
+    //        }
+            history.setTipeTransaksi(transaksiHd.getTipeTransaksi());
+            historyDao.save(history);
         }
-        history.setTipeTransaksi(transaksiHd.getTipeTransaksi());
-        historyDao.save(history);
-        return transaksiHdRepository.save(transaksiHd);
+            return transaksiHdRepository.save(transaksiHd);
         
     }
 
     @Override
     public TransaksiHd edit(TransaksiHd transaksiHd) {
         return transaksiHdRepository.saveAndFlush(transaksiHd);
+    }
+
+    @Override
+    public List<TransaksiHd> getTransaksiByIdKwitansi(Long idKwitansi) {
+        return transaksiHdRepository.findByIdKwitansi(idKwitansi);
     }
     
 }

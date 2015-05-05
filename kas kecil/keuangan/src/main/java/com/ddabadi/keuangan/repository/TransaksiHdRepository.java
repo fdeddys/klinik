@@ -18,7 +18,10 @@ import org.springframework.data.repository.query.Param;
  */
 public interface TransaksiHdRepository extends JpaRepository<TransaksiHd, Long> {
    
-    @Query(value = "select t from TransaksiHd t where t.tanggal = :tgl")
+    @Query(value = "select t from TransaksiHd t where t.tanggal = :tgl and t.isCancel=0")
     public List<TransaksiHd> findByTgl(@Param("tgl")Date tgl);
+    
+    @Query(value ="select t from TransaksiHd t where t.kwitansi.id = :idKwitansi and t.isCancel=0 ")
+    public List<TransaksiHd> findByIdKwitansi(@Param("idKwitansi")Long idKwitansi);
     
 }

@@ -20,5 +20,7 @@ public interface TempTransaksiRepository extends JpaRepository<TempTransaksi, Lo
     
     @Query(value = "select t from TempTransaksi t where t.isProses = :isProses and t.tglTransaksi = :tglTransaksi ")
     public List<TempTransaksi> findAll(@Param("isProses")int isProses, @Param("tglTransaksi")Date tglTransaksi);
-    
+   
+    @Query(value = "select t from TempTransaksi t where t.noBukti = :noBukti ")
+    public List<TempTransaksi> findByNoBukti(@Param("noBukti")String noBukti);
 }

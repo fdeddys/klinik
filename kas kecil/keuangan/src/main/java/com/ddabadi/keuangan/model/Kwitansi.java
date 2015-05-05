@@ -40,6 +40,19 @@ public class Kwitansi implements Serializable {
     
     @Column(name="Total")
     private Double total;
+    
+    @Column(name="noKwitansi", length=10)
+    private String noKwitansi;
+
+    public String getNoKwitansi() {
+        return noKwitansi;
+    }
+
+    public void setNoKwitansi(String noKwitansi) {
+        this.noKwitansi = noKwitansi;
+    }
+    
+    
 
     public Long getId() {
         return id;

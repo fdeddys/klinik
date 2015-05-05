@@ -335,6 +335,7 @@ public class TransaksiKeuangan extends javax.swing.JFrame {
             ReportController.previewReport("laporan/buktiSlip.jasper", parameter,lists, "Slip");                        
             
         }catch(Exception e){
+            e.printStackTrace();
             System.out.println(e.getMessage());
         }
     }//GEN-LAST:event_btnPreviewActionPerformed

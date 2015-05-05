@@ -10,5 +10,5 @@ package com.ddabadi.keuangan.enumerate;
  * @author win7
  */
 public enum TipeTransaksi {
-    penerimaan, pengeluaran, klinik, farmasi, laboratorium ;
+    penerimaan, pengeluaran, klinik, farmasi, laboratorium , kwitansi;
 }

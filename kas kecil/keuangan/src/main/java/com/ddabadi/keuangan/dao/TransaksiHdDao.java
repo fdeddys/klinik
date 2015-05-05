@@ -19,4 +19,5 @@ public interface TransaksiHdDao {
     public TransaksiHd getById(Long id);
     public TransaksiHd save(TransaksiHd transaksiHd);
     public TransaksiHd edit(TransaksiHd transaksiHd);
+    public List<TransaksiHd> getTransaksiByIdKwitansi(Long idKwitansi);
 }

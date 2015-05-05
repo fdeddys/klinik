@@ -7,6 +7,7 @@ package com.ddabadi.keuangan.view.transaksi;
 
 import static com.ddabadi.keuangan.App.context;
 import com.ddabadi.keuangan.controller.ReportController;
+import com.ddabadi.keuangan.dao.KwitansiDao;
 import com.ddabadi.keuangan.dao.ParamsDao;
 import com.ddabadi.keuangan.dao.TransaksiHdDao;
 import com.ddabadi.keuangan.dto.SlipDto;
@@ -37,8 +38,10 @@ public class DaftarTransaksi extends javax.swing.JFrame {
      * Creates new form DaftarTransaksi
      */
     
-    private final TransaksiHdDao transaksiHdDao;
+    private final TransaksiHdDao transaksiHdDao;    
     private final ParamsDao paramsDao;
+    
+    
     private DefaultTableModel tableModel;
     
     public DaftarTransaksi() {
@@ -46,8 +49,10 @@ public class DaftarTransaksi extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         transaksiHdDao = (TransaksiHdDao) context.getBean("transaksiHdDao");
         paramsDao =(ParamsDao) context.getBean("paramsDao");
+        
         setTableModel();
         isiTable();
+        tglProses.setDate(new Date());
     }
 
     /**
@@ -59,10 +64,13 @@ public class DaftarTransaksi extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        dateTime1 = new org.joda.time.DateTime();
+        jDatePickerUtil1 = new org.jdatepicker.util.JDatePickerUtil();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblDaftar = new javax.swing.JTable();
         btnPreview = new javax.swing.JButton();
         btnExit = new javax.swing.JButton();
+        tglProses = new com.toedter.calendar.JDateChooser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -94,16 +102,23 @@ public class DaftarTransaksi extends javax.swing.JFrame {
             }
         });
 
+        tglProses.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        tglProses.setDateFormatString("dd - MMM - yyyy");
+        tglProses.setFocusable(false);
+        tglProses.setNextFocusableComponent(tblDaftar);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(494, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(tglProses, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnPreview)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnExit, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(192, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
@@ -112,17 +127,19 @@ public class DaftarTransaksi extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap(297, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnPreview)
-                    .addComponent(btnExit))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(296, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tglProses, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnPreview)
+                        .addComponent(btnExit)))
                 .addContainerGap())
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(43, Short.MAX_VALUE)))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(44, Short.MAX_VALUE)))
         );
 
         pack();
@@ -167,6 +184,7 @@ public class DaftarTransaksi extends javax.swing.JFrame {
             ReportController.previewReport("laporan/buktiSlip.jasper", parameter,lists, "Slip");
             
         }catch(Exception e){
+            e.printStackTrace();
             System.out.println(e.getMessage());
         }
         
@@ -285,7 +303,10 @@ public class DaftarTransaksi extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnExit;
     private javax.swing.JButton btnPreview;
+    private org.joda.time.DateTime dateTime1;
+    private org.jdatepicker.util.JDatePickerUtil jDatePickerUtil1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblDaftar;
+    private com.toedter.calendar.JDateChooser tglProses;
     // End of variables declaration//GEN-END:variables
 }

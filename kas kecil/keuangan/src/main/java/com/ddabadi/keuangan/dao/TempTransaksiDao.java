@@ -18,5 +18,7 @@ public interface TempTransaksiDao {
     public List<TempTransaksi > getAllTransaksi(Date tgl, int isProses);
     public void updateProses(Long id);
     public void batalProses(Long id);
+    public TempTransaksi getById(Long id);
+    public TempTransaksi getByNoBukti(String noBukti);
     
 }

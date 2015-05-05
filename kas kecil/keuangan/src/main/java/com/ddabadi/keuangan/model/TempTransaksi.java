@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import org.hibernate.annotations.Index;
 
 /**
  *
@@ -35,6 +36,7 @@ public class TempTransaksi implements Serializable {
     private TipeTransaksi tipeTransaksi;
     
     @Column(name="no_bukti")
+    @Index(name = "ixNoBukti")
     private String noBukti;
     
     @Column(name="no_Rm")

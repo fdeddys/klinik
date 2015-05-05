@@ -41,5 +41,15 @@ public class TempTransaksiDaoImpl implements TempTransaksiDao {
     public List<TempTransaksi > getAllTransaksi(Date tgl, int isProses) {
         return repository.findAll(isProses,tgl );        
     }
+
+    @Override
+    public TempTransaksi getById(Long id) {
+        return repository.findOne(id);
+    }
+
+    @Override
+    public TempTransaksi getByNoBukti(String noBukti) {
+        return repository.findByNoBukti(noBukti).iterator().next();
+    }
         
 }

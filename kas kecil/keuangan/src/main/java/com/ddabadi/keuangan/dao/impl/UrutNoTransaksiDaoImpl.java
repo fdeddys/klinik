@@ -59,8 +59,34 @@ public class UrutNoTransaksiDaoImpl implements UrutNoTransaksiDao {
             noBaru = noBaru.substring(noBaru.length()-4, noBaru.length());
             noBaru = "TR" + tahun.trim()  + noBaru;
         }
-        
-        
+                
+        return noBaru;
+    }
+
+    @Override
+    public String generateNoKwitansi(String tahun) {
+        String noBaru;
+        UrutNoTransaksi urutNoTransaksi = this.findByTipeTransaksiTahun(TipeTransaksi.kwitansi, tahun);
+        if(urutNoTransaksi==null){
+            urutNoTransaksi = new UrutNoTransaksi();
+            urutNoTransaksi.setTahun(tahun);
+            urutNoTransaksi.setTipeTransaksi(TipeTransaksi.kwitansi);
+            urutNoTransaksi.setUrut(1);
+            this.save(urutNoTransaksi);
+            noBaru ="KW" + tahun.trim() + "00001";
+        }else{
+            Integer noLama= urutNoTransaksi.getUrut();
+
+            urutNoTransaksi.setUrut(noLama + 1);
+            urutTransaksiRepository.save(urutNoTransaksi);
+            
+            noLama = noLama +1;
+            noBaru = (noLama).toString().trim();
+            noBaru = "0000" + noBaru;
+            noBaru = noBaru.substring(noBaru.length()-4, noBaru.length());
+            noBaru = "KW" + tahun.trim()  + noBaru;
+        }
+                
         return noBaru;
     }
         

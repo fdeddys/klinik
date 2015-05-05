@@ -17,4 +17,5 @@ public interface UrutNoTransaksiDao {
     public UrutNoTransaksi save(UrutNoTransaksi urutNoTransaksi);
     public UrutNoTransaksi findByTipeTransaksiTahun(TipeTransaksi tipeTransaksi, String tahun);
     public String generateNoTransaksi(TipeTransaksi tipeTransaksi, String tahun);
+    public String generateNoKwitansi(String tahun);
 }

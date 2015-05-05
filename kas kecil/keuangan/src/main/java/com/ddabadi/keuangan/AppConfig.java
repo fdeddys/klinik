@@ -7,12 +7,14 @@ package com.ddabadi.keuangan;
 
 import com.ddabadi.keuangan.dao.HistoryDao;
 import com.ddabadi.keuangan.dao.JenisTransaksiDao;
+import com.ddabadi.keuangan.dao.KwitansiDao;
 import com.ddabadi.keuangan.dao.ParamsDao;
 import com.ddabadi.keuangan.dao.TempTransaksiDao;
 import com.ddabadi.keuangan.dao.TransaksiHdDao;
 import com.ddabadi.keuangan.dao.UrutNoTransaksiDao;
 import com.ddabadi.keuangan.dao.impl.HistoryDaoImpl;
 import com.ddabadi.keuangan.dao.impl.JenisTransaksiDaoImpl;
+import com.ddabadi.keuangan.dao.impl.KwitansiDaoImpl;
 import com.ddabadi.keuangan.dao.impl.ParamsDaoImpl;
 import com.ddabadi.keuangan.dao.impl.TempTransaksiDaoImpl;
 import com.ddabadi.keuangan.dao.impl.TransaksiHdDaoImpl;
@@ -94,9 +96,7 @@ public class AppConfig {
     @Bean(name="jenisTransaksiDao") 
     public JenisTransaksiDao  jenisTransaksiFunc() {
         return new JenisTransaksiDaoImpl();
-    };
-    
-    
+    };        
     
     @Bean(name="paramsDao") 
     public ParamsDao  paramsFunc() {
@@ -118,5 +118,8 @@ public class AppConfig {
         return new TempTransaksiDaoImpl();
     }
     
-    
+    @Bean(name="kwitansiDao")
+    public KwitansiDao kwitansiDaoFunc(){
+        return new KwitansiDaoImpl();
+    }
 }

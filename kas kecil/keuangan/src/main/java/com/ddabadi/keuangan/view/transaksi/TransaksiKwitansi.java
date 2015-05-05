@@ -6,9 +6,32 @@
 package com.ddabadi.keuangan.view.transaksi;
 
 import static com.ddabadi.keuangan.App.context;
+import com.ddabadi.keuangan.controller.ReportController;
+import com.ddabadi.keuangan.dao.JenisTransaksiDao;
+import com.ddabadi.keuangan.dao.KwitansiDao;
+import com.ddabadi.keuangan.dao.ParamsDao;
 import com.ddabadi.keuangan.dao.TempTransaksiDao;
 import com.ddabadi.keuangan.dao.TransaksiHdDao;
+import com.ddabadi.keuangan.dao.UrutNoTransaksiDao;
+import com.ddabadi.keuangan.dto.TagihanPasien;
+import com.ddabadi.keuangan.model.JenisTransaksi;
+import com.ddabadi.keuangan.model.Kwitansi;
+import com.ddabadi.keuangan.model.Params;
+import com.ddabadi.keuangan.model.TempTransaksi;
+import com.ddabadi.keuangan.model.TransaksiHd;
+import com.ddabadi.keuangan.utility.Rupiah;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -20,9 +43,13 @@ import javax.swing.table.DefaultTableModel;
 public class TransaksiKwitansi extends javax.swing.JFrame {
 
     private DefaultTableModel modelTransaksiTemp;
-    private DefaultTableModel modelKwitansi;
+    private DefaultTableModel modelTransaksiHd;
+    private final KwitansiDao kwitansiDao;
     private final TempTransaksiDao tempTransaksiDao;
     private final TransaksiHdDao transaksiHdDao;
+    private final UrutNoTransaksiDao urutNoTransaksiDao;
+    private final JenisTransaksiDao jenisTransaksiDao;
+    private final ParamsDao paramsDao;
     
     /**
      * Creates new form TransaksiKwitansi
@@ -32,6 +59,10 @@ public class TransaksiKwitansi extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         tempTransaksiDao = (TempTransaksiDao) context.getBean("tempTransaksiDao");
         transaksiHdDao = (TransaksiHdDao) context.getBean("transaksiHdDao");
+        kwitansiDao =(KwitansiDao) context.getBean("kwitansiDao");
+        urutNoTransaksiDao=(UrutNoTransaksiDao) context.getBean("urutNoTransaksiDao");
+        jenisTransaksiDao=(JenisTransaksiDao) context.getBean("jenisTransaksiDao");
+        paramsDao=(ParamsDao) context.getBean("paramsDao");
         setTableModelTempTransaksi();
         setTableModelKwitansi();
     }
@@ -56,10 +87,12 @@ public class TransaksiKwitansi extends javax.swing.JFrame {
         tblKwitansi = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txtNoKwitansi = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
+        txtNoRM = new javax.swing.JTextField();
+        txtNama = new javax.swing.JTextField();
+        txtId = new javax.swing.JTextField();
+        btnEdit = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -84,12 +117,32 @@ public class TransaksiKwitansi extends javax.swing.JFrame {
         jLabel1.setOpaque(true);
 
         btnRetrieve.setText("Retrieve");
+        btnRetrieve.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRetrieveActionPerformed(evt);
+            }
+        });
 
         btnTambahDetil.setText("Tambah ke detil");
+        btnTambahDetil.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTambahDetilActionPerformed(evt);
+            }
+        });
 
         btnDeleteDetil.setText("delete dari detil");
+        btnDeleteDetil.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteDetilActionPerformed(evt);
+            }
+        });
 
         btnPreview.setText("Preview");
+        btnPreview.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPreviewActionPerformed(evt);
+            }
+        });
 
         tblKwitansi.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -106,7 +159,27 @@ public class TransaksiKwitansi extends javax.swing.JFrame {
 
         jLabel2.setText("No Kwitansi");
 
+        txtNoKwitansi.setEditable(false);
+
         jLabel3.setText("No RM / Nama");
+
+        txtNoRM.setEditable(false);
+
+        txtNama.setEditable(false);
+
+        txtId.setEditable(false);
+        txtId.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtIdActionPerformed(evt);
+            }
+        });
+
+        btnEdit.setText("Edit");
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -119,11 +192,17 @@ public class TransaksiKwitansi extends javax.swing.JFrame {
                     .addComponent(jLabel2))
                 .addGap(28, 28, 28)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextField1)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE))
+                    .addComponent(txtNoKwitansi)
+                    .addComponent(txtNoRM, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
-                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(177, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnEdit)
+                        .addGap(0, 262, Short.MAX_VALUE))
+                    .addComponent(txtNama))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -131,12 +210,14 @@ public class TransaksiKwitansi extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtNoKwitansi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnEdit))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtNoRM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtNama, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -200,9 +281,9 @@ public class TransaksiKwitansi extends javax.swing.JFrame {
                     .addContainerGap()))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(261, Short.MAX_VALUE)
+                    .addContainerGap(259, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(136, Short.MAX_VALUE)))
+                    .addContainerGap(135, Short.MAX_VALUE)))
         );
 
         layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btnDeleteDetil, btnPreview, btnRetrieve, btnTambahDetil});
@@ -210,9 +291,221 @@ public class TransaksiKwitansi extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnRetrieveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRetrieveActionPerformed
+        // TODO add your handling code here:
+        tarikTemp();
+    }//GEN-LAST:event_btnRetrieveActionPerformed
+
+    private void btnTambahDetilActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahDetilActionPerformed
+        // TODO add your handling code here:
+        Double total=0D;
+        Long idKwitansi;
+        String noKwitansi;
+        Kwitansi kwitansi ;
+        int idxSelectedTempTable = -1 ;
+        Long idTempTransaksi;        
+        
+        idxSelectedTempTable = tblTempTransaksi.getSelectedRow();        
+        if(idxSelectedTempTable!=-1){
+                            
+            SimpleDateFormat sdf = new SimpleDateFormat("yy");
+            idTempTransaksi = Long.parseLong(modelTransaksiTemp.getValueAt(idxSelectedTempTable, 0).toString()) ;
+            TempTransaksi  tempTransaksi = tempTransaksiDao.getById(idTempTransaksi);
+
+            if(txtNoKwitansi.getText().trim().equals("")){                     
+                kwitansi = new Kwitansi();
+                kwitansi.setNama(tempTransaksi.getNama());
+                kwitansi.setNoRM(tempTransaksi.getNoRM());
+                kwitansi.setTglKwitansi(tempTransaksi.getTglTransaksi());
+                kwitansi.setTotal(0D);
+                noKwitansi = kwitansiDao.generateNoKwitansi(new Date());
+                kwitansi.setNoKwitansi(noKwitansi);
+                kwitansiDao.save(kwitansi);
+                txtId.setText(kwitansi.getId().toString().trim());            
+            }else{
+                idKwitansi = Long.parseLong(txtId.getText());
+                kwitansi = kwitansiDao.getById(idKwitansi);
+                total = kwitansi.getTotal();                       
+            }
+            
+            JenisTransaksi jenisTransaksi = jenisTransaksiDao.findById(1L);
+
+            TransaksiHd transaksiHd = new TransaksiHd();
+            transaksiHd.setIsApprove(1);
+            transaksiHd.setIsCancel(0);
+            transaksiHd.setTipeTransaksi(tempTransaksi.getTipeTransaksi());
+            transaksiHd.setNoTransaksi(tempTransaksi.getNoBukti());
+            transaksiHd.setKeterangan("Pendapatan");
+            transaksiHd.setKwitansi(kwitansi);
+            transaksiHd.setJenisTransaksi(jenisTransaksi);
+            transaksiHd.setTanggal(tempTransaksi.getTglTransaksi());
+            transaksiHd.setTotal(tempTransaksi.getTotal());
+            transaksiHdDao.save(transaksiHd);
+
+            total = total + tempTransaksi.getTotal();
+            kwitansi.setTotal(total);
+            kwitansiDao.save(kwitansi);
+            tempTransaksiDao.updateProses(tempTransaksi.getId());
+            
+            txtId.setText(kwitansi.getId().toString());
+            txtNoKwitansi.setText(kwitansi.getNoKwitansi());
+            txtNama.setText(kwitansi.getNama());
+            txtNoRM.setText(kwitansi.getNoRM());
+            viewKwitansi();
+            tarikTemp();
+        }else{
+            JOptionPane.showMessageDialog(null, "No selected record", "Error", JOptionPane.INFORMATION_MESSAGE);
+        }
+        
+    }//GEN-LAST:event_btnTambahDetilActionPerformed
+
+    private void btnPreviewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPreviewActionPerformed
+        // TODO add your handling code here:
+        
+        Double total=0D;
+        
+        try{
+            Params params = paramsDao.getParams();
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
+            
+            List<TagihanPasien> lists = new ArrayList<>();
+            Iterator iterator = transaksiHdDao.getTransaksiByIdKwitansi(Long.parseLong(txtId.getText())).iterator();
+            TransaksiHd transaksiHd = new TransaksiHd();
+            
+            while(iterator.hasNext()){
+                transaksiHd = (TransaksiHd) iterator.next();
+                TagihanPasien tagihanPasien = new TagihanPasien();
+                tagihanPasien.setId(transaksiHd.getId());
+                tagihanPasien.setNoTransaksi(transaksiHd.getNoTransaksi());
+                tagihanPasien.setTipeTransaksi(transaksiHd.getTipeTransaksi().toString());
+                tagihanPasien.setTotal(transaksiHd.getTotal());
+                total = total + transaksiHd.getTotal();
+                lists.add(tagihanPasien);
+            }            
+            
+            String rp=Rupiah.convert( total.intValue());
+                        
+            Map parameter = new HashMap();
+            parameter.put("h1", params.getH1().trim());
+            parameter.put("h2", params.getH2().trim());
+            parameter.put("h3", params.getH3().trim());
+            parameter.put("h4", params.getH4().trim());
+            parameter.put("terbilang", "# " + rp + "Rupiah #");
+            parameter.put("tanggal", sdf.format(transaksiHd.getTanggal()));
+            parameter.put("noRM", txtNoRM.getText().trim());
+            parameter.put("nama", txtNama.getText());
+                    
+            ReportController.previewReport("laporan/TagihanPasien.jasper", parameter,lists, "Slip");                        
+            
+        }catch(Exception e){
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
+    }//GEN-LAST:event_btnPreviewActionPerformed
+
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+        // TODO add your handling code here:
+        btnEdit.setEnabled(false);
+        txtId.setEditable(true);
+        txtId.setFocusable(true);
+    }//GEN-LAST:event_btnEditActionPerformed
+
+    private void txtIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdActionPerformed
+        // TODO add your handling code here:
+        Kwitansi kwitansi = kwitansiDao.getById(Long.parseLong(txtId.getText()) );
+        if(kwitansi != null){
+            
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            String tglHariIni = sdf.format(new Date());
+            String tglProses = sdf.format(kwitansi.getTglKwitansi());
+
+            if(tglHariIni.equals(tglProses)){
+                txtNama.setText(kwitansi.getNama());
+                txtNoKwitansi.setText(kwitansi.getNoKwitansi());
+                txtNoRM.setText(kwitansi.getNoRM());
+                viewKwitansi();
+            }else{
+                JOptionPane.showMessageDialog(null, "Tanggal beda hari !!!");
+            }
+
+            
+        }
+        btnEdit.setEnabled(true);
+        txtId.setEditable(false);
+        txtId.setFocusable(false);
+    }//GEN-LAST:event_txtIdActionPerformed
+
+    private void btnDeleteDetilActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteDetilActionPerformed
+        // TODO add your handling code here:
+        Integer idxSelected;
+        idxSelected  = tblKwitansi.getSelectedRow();
+        if(idxSelected==-1){
+            JOptionPane.showMessageDialog(null, "Silahkan klik pada grid","Not Selected record",JOptionPane.INFORMATION_MESSAGE);
+        }else{
+            Long idTransaksi = Long.parseLong(modelTransaksiHd.getValueAt(idxSelected, 0).toString()) ;
+            TransaksiHd  transaksiHd  = transaksiHdDao.getById(idTransaksi);
+            TempTransaksi tempTransaksi = tempTransaksiDao.getByNoBukti(transaksiHd.getNoTransaksi());
+            if(tempTransaksi==null){
+                JOptionPane.showMessageDialog(null, "No Bukti tidak ada di table sementara !","No Bukti not Found",JOptionPane.ERROR_MESSAGE);
+            }else{                
+                Double totKwitansi;
+                Kwitansi kwitansi = kwitansiDao.getById(transaksiHd.getKwitansi().getId());
+                totKwitansi = kwitansi.getTotal() - transaksiHd.getTotal();
+                kwitansi.setTotal(totKwitansi);
+                kwitansiDao.save(kwitansi);
+                tempTransaksiDao.batalProses(tempTransaksi.getId());
+                transaksiHd.setIsCancel(1);
+                transaksiHdDao.save(transaksiHd);
+                tarikTemp();
+                viewKwitansi();
+            }
+        }
+    }//GEN-LAST:event_btnDeleteDetilActionPerformed
+
     /**
      * @param args the command line arguments
      */
+    
+    private void tarikTemp(){
+        modelTransaksiTemp.getDataVector().removeAllElements();
+        modelTransaksiTemp.fireTableDataChanged();                
+         
+        TempTransaksi tempTransaksi = new TempTransaksi();
+        Iterator iterator = tempTransaksiDao.getAllTransaksi(new Date(),0).iterator();
+        while(iterator.hasNext()){
+            Object[] o = new Object[5];
+            tempTransaksi= ((TempTransaksi) iterator.next());
+            o[0]= tempTransaksi.getId();
+            o[1]= tempTransaksi.getTglTransaksi();
+            o[2]= tempTransaksi.getTipeTransaksi().toString();
+            o[3]= tempTransaksi.getNoBukti();
+            o[4]= tempTransaksi.getTotal();            
+            modelTransaksiTemp.addRow(o);    
+        }
+    }
+   
+    private void viewKwitansi(){
+        
+        if(txtId.getText().equals("")){
+            
+        }else{
+            modelTransaksiHd.getDataVector().removeAllElements();
+            modelTransaksiHd.fireTableDataChanged();                
+
+            TransaksiHd transaksiHd = new TransaksiHd();
+            Iterator iterator = transaksiHdDao.getTransaksiByIdKwitansi(Long.parseLong(txtId.getText())).iterator();
+            while(iterator.hasNext()){
+                Object[] o = new Object[5];
+                transaksiHd= ((TransaksiHd) iterator.next());
+                o[0]= transaksiHd.getId();
+                o[1]= transaksiHd.getTanggal();
+                o[2]= transaksiHd.getTipeTransaksi().toString();
+                o[3]= transaksiHd.getNoTransaksi();
+                o[4]= transaksiHd.getTotal();            
+                modelTransaksiHd.addRow(o);    
+            }
+        }                
+    }
     
     private void setTableModelTempTransaksi(){
         modelTransaksiTemp= new DefaultTableModel(){
@@ -230,7 +523,7 @@ public class TransaksiKwitansi extends javax.swing.JFrame {
         modelTransaksiTemp.addColumn("total");
           
              
-        tblTempTransaksi.getColumnModel().getColumn(3).setCellRenderer(new DaftarTransaksi.DecimalFormatRenderer() );
+        tblTempTransaksi.getColumnModel().getColumn(4).setCellRenderer(new DaftarTransaksi.DecimalFormatRenderer() );
         //alignment 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment( JLabel.CENTER );
@@ -245,20 +538,20 @@ public class TransaksiKwitansi extends javax.swing.JFrame {
     }
     
     private void setTableModelKwitansi() {
-        modelKwitansi= new DefaultTableModel(){
+        modelTransaksiHd= new DefaultTableModel(){
             @Override
             public boolean isCellEditable(int row, int column) {
                 //all cells false
                 return false;
             }
         };
-        tblKwitansi.setModel(modelKwitansi);    
+        tblKwitansi.setModel(modelTransaksiHd);    
         
-        modelKwitansi.addColumn("Id");
-        modelKwitansi.addColumn("tglTransaksi"); 
-        modelKwitansi.addColumn("Tipe");
-        modelKwitansi.addColumn("noBukti");
-        modelKwitansi.addColumn("total");                
+        modelTransaksiHd.addColumn("Id");
+        modelTransaksiHd.addColumn("tglTransaksi"); 
+        modelTransaksiHd.addColumn("Tipe");
+        modelTransaksiHd.addColumn("noBukti");
+        modelTransaksiHd.addColumn("total");                
              
         tblKwitansi.getColumnModel().getColumn(4).setCellRenderer(new DaftarTransaksi.DecimalFormatRenderer() );
         //alignment 
@@ -308,6 +601,7 @@ public class TransaksiKwitansi extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDeleteDetil;
+    private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnPreview;
     private javax.swing.JButton btnRetrieve;
     private javax.swing.JButton btnTambahDetil;
@@ -317,11 +611,12 @@ public class TransaksiKwitansi extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
     private javax.swing.JTable tblKwitansi;
     private javax.swing.JTable tblTempTransaksi;
+    private javax.swing.JTextField txtId;
+    private javax.swing.JTextField txtNama;
+    private javax.swing.JTextField txtNoKwitansi;
+    private javax.swing.JTextField txtNoRM;
     // End of variables declaration//GEN-END:variables
 
     

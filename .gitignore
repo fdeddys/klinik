@@ -1,5 +1,6 @@
-erd.docx
-hrg.xlsx
+*.docx
+*.xlsx
 progress.txt
-IMG.jpg
+*.jpg
+*.jasper
 /kas kecil/keuangan/target/
